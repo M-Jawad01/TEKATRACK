@@ -18,11 +18,11 @@ export default function Topbar() {
         </button>
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white">
-            SJ
+            MJ
           </div>
           <div className="text-sm leading-tight">
-            <p className="font-medium">Sarah Johnson</p>
-            <p className="text-xs text-muted">Member</p>
+            <p className="font-medium">Mubashir Jawad</p>
+            <p className="text-xs text-muted">Admin</p>
           </div>
           <ChevronDown className="h-4 w-4 text-muted" />
         </div>
