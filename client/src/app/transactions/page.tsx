@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Plus, Search, Filter, MoreHorizontal, Download } from "lucide-react";
 import { transactions } from "@/data/mock";
 
-// ক্যাটাগরি অনুযায়ী কালার কোড
+// catagory wise colour code
 const pill: Record<string, string> = {
   Shopping: "bg-purple-100 text-purple-600",
   Income: "bg-brand-50 text-brand-600",
@@ -13,11 +13,11 @@ const pill: Record<string, string> = {
 };
 
 export default function TransactionsPage() {
-  // সার্চ এবং ফিল্টারের জন্য State
+  // state for search and filter 
   const [search, setSearch] = useState("");
   const [type, setType] = useState("All");
 
-  // ডাটা ফিল্টার করার লজিক
+  // logic for data filter 
   const filtered = transactions.filter((t) => {
     const matchSearch =
       t.desc.toLowerCase().includes(search.toLowerCase()) ||

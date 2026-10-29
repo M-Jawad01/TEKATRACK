@@ -10,7 +10,6 @@ const items = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
   { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
   { label: "Budgets", href: "/budgets", icon: PieChart },
-  { label: "Accounts", href: "/accounts", icon: Wallet },
   { label: "Reports", href: "/reports", icon: BarChart3 },
   { label: "Goals", href: "/goals", icon: Target },
   { label: "Settings", href: "/settings", icon: Settings },
