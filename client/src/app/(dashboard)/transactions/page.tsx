@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
-import { Plus, Search, Filter, MoreHorizontal, Download } from "lucide-react";
-import { transactions } from "@/data/mock";
+import AddTransaction from "@/components/AddTransaction";
+import { useState, useEffect } from "react";
+import { Search, Filter, MoreHorizontal, Download } from "lucide-react";
 
-// catagory wise colour code
+// ক্যাটাগরি অনুযায়ী কালার কোড
 const pill: Record<string, string> = {
   Shopping: "bg-purple-100 text-purple-600",
   Income: "bg-brand-50 text-brand-600",
@@ -13,19 +13,47 @@ const pill: Record<string, string> = {
 };
 
 export default function TransactionsPage() {
-  // state for search and filter 
   const [search, setSearch] = useState("");
   const [type, setType] = useState("All");
+  
+  // real data state
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // logic for data filter 
+  // ব্যাকএন্ড থেকে ডাটা আনার কাজ (API Call)
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://localhost:5000/api/transactions", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          setTransactions(data);
+        }
+      } catch (error) {
+        console.error("ডাটা আনতে সমস্যা হয়েছে:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  // ডাটা ফিল্টার করার লজিক (আসল ডাটাবেস ফিল্ড অনুযায়ী আপডেট করা হয়েছে)
   const filtered = transactions.filter((t) => {
     const matchSearch =
-      t.desc.toLowerCase().includes(search.toLowerCase()) ||
+      t.description.toLowerCase().includes(search.toLowerCase()) ||
       t.category.toLowerCase().includes(search.toLowerCase());
+    
     const matchType =
       type === "All" ||
-      (type === "Income" && t.amount > 0) ||
-      (type === "Expense" && t.amount < 0);
+      (type === "Income" && t.type === "income") ||
+      (type === "Expense" && t.type === "expense");
+      
     return matchSearch && matchType;
   });
 
@@ -41,9 +69,9 @@ export default function TransactionsPage() {
           <button className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium hover:bg-canvas">
             <Download className="h-4 w-4" /> Export
           </button>
-          <button className="flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-500 shadow-sm shadow-brand-500/20">
-            <Plus className="h-4 w-4" /> Add Transaction
-          </button>
+          
+          {/* Add Transaction Modal */}
+          <AddTransaction />
         </div>
       </div>
 
@@ -92,18 +120,28 @@ export default function TransactionsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length > 0 ? (
-                filtered.map((t, i) => (
-                  <tr key={i} className="border-b border-line last:border-0 hover:bg-canvas/30 transition-colors">
-                    <td className="px-6 py-4 text-muted whitespace-nowrap">{t.date}</td>
-                    <td className="px-6 py-4 font-medium">{t.desc}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-muted">
+                    Loading transactions...
+                  </td>
+                </tr>
+              ) : filtered.length > 0 ? (
+                filtered.map((t) => (
+                  <tr key={t.id} className="border-b border-line last:border-0 hover:bg-canvas/30 transition-colors">
+                    {/* ডাটাবেসের টাইমস্ট্যাম্পকে সুন্দর ডেট ফরম্যাটে দেখানো হচ্ছে */}
+                    <td className="px-6 py-4 text-muted whitespace-nowrap">
+                      {new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </td>
+                    <td className="px-6 py-4 font-medium">{t.description}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${pill[t.category] || "bg-slate-100 text-slate-600"}`}>
                         {t.category}
                       </span>
                     </td>
-                    <td className={`px-6 py-4 text-right font-medium whitespace-nowrap ${t.amount < 0 ? "text-red-500" : "text-brand-600"}`}>
-                      {t.amount < 0 ? "-" : "+"}৳{Math.abs(t.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    {/* ইনকাম হলে সবুজ (+), খরচ হলে লাল (-) দেখাবে */}
+                    <td className={`px-6 py-4 text-right font-medium whitespace-nowrap ${t.type === "expense" ? "text-red-500" : "text-brand-600"}`}>
+                      {t.type === "expense" ? "-" : "+"}৳{Number(t.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button className="inline-flex rounded-lg p-2 text-muted hover:bg-line hover:text-ink transition">
@@ -115,7 +153,7 @@ export default function TransactionsPage() {
               ) : (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-muted">
-                    No transactions found for "{search}".
+                    No transactions found. Add a new one!
                   </td>
                 </tr>
               )}

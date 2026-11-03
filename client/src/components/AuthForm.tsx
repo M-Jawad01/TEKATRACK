@@ -2,14 +2,47 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Leaf } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(mode, "Data:", formData);
-    alert(`${mode} button clicked! Data is in console.`);
+    setLoading(true);
+
+    // login or registration api link
+    const endpoint = mode === "login" 
+      ? "http://localhost:5000/api/login" 
+      : "http://localhost:5000/api/register";
+
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message); // success message  
+        if (mode === "login") {
+          localStorage.setItem("token", data.token);
+          router.push("/"); // login to dashboard
+        } else {
+          router.push("/login"); // after registration to login page 
+        }
+      } else {
+        alert(data.error); // if any mistake show error message 
+      }
+    } catch (error) {
+      alert("সার্ভারের সাথে কানেক্ট করা যাচ্ছে না!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = "w-full rounded-xl border border-line bg-canvas px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white transition-colors";
@@ -55,8 +88,8 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
           />
         </div>
 
-        <button type="submit" className="mt-2 w-full rounded-xl bg-brand-600 py-3 text-sm font-medium text-white hover:bg-brand-500 shadow-sm transition-colors">
-          {mode === "login" ? "Log in" : "Sign up"}
+        <button disabled={loading} type="submit" className="mt-2 w-full rounded-xl bg-brand-600 py-3 text-sm font-medium text-white hover:bg-brand-500 shadow-sm transition-colors disabled:opacity-70">
+          {loading ? "Please wait..." : (mode === "login" ? "Log in" : "Sign up")}
         </button>
 
         <p className="text-center text-sm text-muted mt-4">

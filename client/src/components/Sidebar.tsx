@@ -1,55 +1,63 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard, ArrowLeftRight, PieChart, Wallet,
-  BarChart3, Target, Settings, Leaf,
-} from "lucide-react";
-
-const items = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
-  { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
-  { label: "Budgets", href: "/budgets", icon: PieChart },
-  { label: "Reports", href: "/reports", icon: BarChart3 },
-  { label: "Goals", href: "/goals", icon: Target },
-  { label: "Settings", href: "/settings", icon: Settings },
-];
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, ArrowLeftRight, PieChart, BarChart2, Target, Settings, LogOut, Leaf } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const menuItems = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/" },
+    { name: "Transactions", icon: ArrowLeftRight, path: "/transactions" },
+    { name: "Budgets", icon: PieChart, path: "/budgets" },
+    { name: "Reports", icon: BarChart2, path: "/reports" },
+    { name: "Goals", icon: Target, path: "/goals" },
+    { name: "Settings", icon: Settings, path: "/settings" },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
   return (
-    <aside className="hidden w-64 shrink-0 flex-col bg-sidebar p-4 text-white lg:flex">
-      <div className="mb-8 flex items-center gap-2 px-3 py-4">
-        <Leaf className="h-7 w-7 text-brand-500" />
-        <span className="text-2xl font-bold">TekaTrack</span>
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-[#0F3D2E] flex flex-col">
+      {/* logo part without border */}
+      <div className="flex h-20 items-center gap-3 px-6 mt-2">
+        <Leaf className="h-8 w-8 text-[#4ade80]" />
+        <span className="text-2xl font-bold text-white tracking-wide">TekaTrack</span>
       </div>
 
-      <nav className="space-y-1">
-        {items.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href;
+      {/* menu item */}
+      <nav className="flex-1 space-y-1.5 p-4 mt-4">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.path;
           return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
-                active ? "bg-white/10" : "text-white/75 hover:bg-white/5 hover:text-white"
+            <Link 
+              key={item.name} 
+              href={item.path}
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                isActive 
+                  ? "bg-white/15 text-white shadow-sm" // active state (mild white background)
+                  : "text-white/70 hover:bg-white/5 hover:text-white" // inactive state
               }`}
             >
-              <Icon className="h-5 w-5" />
-              {label}
+              <item.icon className={`h-5 w-5 ${isActive ? "text-white" : "text-white/70"}`} />
+              {item.name}
             </Link>
           );
         })}
       </nav>
 
-      <div className="mt-auto rounded-2xl border border-white/15 p-5">
-        <Leaf className="mb-3 h-5 w-5 text-brand-500" />
-        <p className="font-semibold">Build a better financial future</p>
-        <p className="mt-2 text-xs text-white/65">
-          Track your spending, save more, and reach your goals.
-        </p>
-        <button className="mt-4 w-full rounded-lg bg-brand-600 py-2 text-sm font-medium hover:bg-brand-500">
-          Learn More
+      {/* logout button */}
+      <div className="p-4 mb-4">
+        <button 
+          onClick={handleLogout} 
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+        >
+          <LogOut className="h-5 w-5" />
+          Log out
         </button>
       </div>
     </aside>
