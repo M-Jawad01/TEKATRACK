@@ -3,7 +3,7 @@ import AddTransaction from "@/components/AddTransaction";
 import { useState, useEffect } from "react";
 import { Search, Filter, MoreHorizontal, Download } from "lucide-react";
 
-// ক্যাটাগরি অনুযায়ী কালার কোড
+// code based on the category, we will assign a pill color for each category
 const pill: Record<string, string> = {
   Shopping: "bg-purple-100 text-purple-600",
   Income: "bg-brand-50 text-brand-600",
@@ -20,7 +20,7 @@ export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ব্যাকএন্ড থেকে ডাটা আনার কাজ (API Call)
+  // fetch transactions from backend
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -43,7 +43,7 @@ export default function TransactionsPage() {
     fetchTransactions();
   }, []);
 
-  // ডাটা ফিল্টার করার লজিক (আসল ডাটাবেস ফিল্ড অনুযায়ী আপডেট করা হয়েছে)
+  // filter transactions based on search and type
   const filtered = transactions.filter((t) => {
     const matchSearch =
       t.description.toLowerCase().includes(search.toLowerCase()) ||
@@ -129,7 +129,7 @@ export default function TransactionsPage() {
               ) : filtered.length > 0 ? (
                 filtered.map((t) => (
                   <tr key={t.id} className="border-b border-line last:border-0 hover:bg-canvas/30 transition-colors">
-                    {/* ডাটাবেসের টাইমস্ট্যাম্পকে সুন্দর ডেট ফরম্যাটে দেখানো হচ্ছে */}
+                    {/* Date */}
                     <td className="px-6 py-4 text-muted whitespace-nowrap">
                       {new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
@@ -139,7 +139,7 @@ export default function TransactionsPage() {
                         {t.category}
                       </span>
                     </td>
-                    {/* ইনকাম হলে সবুজ (+), খরচ হলে লাল (-) দেখাবে */}
+                    {/* Amount */}
                     <td className={`px-6 py-4 text-right font-medium whitespace-nowrap ${t.type === "expense" ? "text-red-500" : "text-brand-600"}`}>
                       {t.type === "expense" ? "-" : "+"}৳{Number(t.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>

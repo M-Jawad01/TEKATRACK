@@ -17,3 +17,65 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
 }
+
+/* GLOBAL DARK MODE OVERRIDES */
+html.dark body,
+html.dark .bg-canvas {
+  background-color: #0f172a !important; /* Deep slate background */
+  color: #f8fafc !important;
+}
+
+html.dark .bg-white {
+  background-color: #1e293b !important; /* Dark card & header background */
+  color: #f8fafc !important;
+}
+
+html.dark .bg-gray-50,
+html.dark .bg-gray-50\/50,
+html.dark .bg-gray-50\/70,
+html.dark .bg-gray-100,
+html.dark .bg-gray-100\/80 {
+  background-color: #334155 !important; /* Secondary dark surface */
+}
+
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-line,
+html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #334155 !important;
+}
+
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-gray-700,
+html.dark .text-ink {
+  color: #f1f5f9 !important;
+}
+
+html.dark .text-gray-600,
+html.dark .text-gray-500,
+html.dark .text-gray-400,
+html.dark .text-muted {
+  color: #94a3b8 !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* Keep search input transparent inside its pill container */
+html.dark header input {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+html.dark .hover\:bg-gray-50:hover,
+html.dark .hover\:bg-gray-50\/50:hover,
+html.dark .hover\:bg-gray-50\/70:hover,
+html.dark .hover\:bg-gray-100:hover {
+  background-color: #334155 !important;
+}
