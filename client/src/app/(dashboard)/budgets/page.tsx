@@ -1,14 +1,14 @@
 "use client";
-import CreateBudget from "@/components/CreateBudget"; // Create Budget Modal ইম্পোর্ট করা হলো
+import CreateBudget from "@/components/CreateBudget"; // Create Budget Modal import
 import { useState, useEffect } from "react";
 import { Target, AlertTriangle, TrendingUp, Wallet } from "lucide-react";
 
 export default function BudgetsPage() {
-  // ডাটা রাখার জন্য নতুন স্টেট
+  // new state variables for budgets and loading status
   const [budgets, setBudgets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ব্যাকএন্ড থেকে বাজেট এবং খরচের ডাটা আনার কাজ (API Call)
+  // get budgets from the backend API when the component mounts
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
@@ -45,7 +45,7 @@ export default function BudgetsPage() {
           <p className="mt-1 text-muted">Manage your spending limits by category.</p>
         </div>
         
-        {/* এখানে CreateBudget বাটন/মডাল বসানো হয়েছে */}
+        {/* CreateBudget model  */}
         <CreateBudget />
         
       </div>

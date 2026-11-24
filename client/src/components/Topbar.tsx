@@ -14,6 +14,7 @@ import {
   X,
   Moon,
   Sun,
+  Leaf,
 } from "lucide-react";
 
 export default function Topbar() {
@@ -91,7 +92,7 @@ export default function Topbar() {
 
         const generatedAlerts: any[] = [];
 
-        // Budget warnings (80% বা তার বেশি খরচ হলে অ্যালার্ট)
+        // Budget warnings (alerts when spent >= 80% of limit)
         if (budgetRes.ok) {
           const budgets = await budgetRes.json();
           budgets.forEach((b: any) => {
@@ -116,7 +117,7 @@ export default function Topbar() {
           });
         }
 
-        // Goal completions (100% পূরণ হলে অ্যালার্ট)
+        // Goal completions alerts (alerts when saved >= target)
         if (goalRes.ok) {
           const goals = await goalRes.json();
           goals.forEach((g: any) => {
@@ -141,7 +142,7 @@ export default function Topbar() {
 
     fetchTopbarData();
 
-    // বাইরে ক্লিক করলে ড্রপডাউন বন্ধ হওয়ার লজিক
+    // 3. Close dropdowns when clicking outside
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node))
         setIsSearchOpen(false);
@@ -154,8 +155,8 @@ export default function Topbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Topbar থেকে এক ক্লিকে Dark/Light মোড টগল করার ফাংশন
- const toggleTheme = () => {
+  // Toggle between light and dark themes
+  const toggleTheme = () => {
     const root = document.documentElement;
     if (isDark) {
       root.classList.remove("dark");
@@ -170,7 +171,7 @@ export default function Topbar() {
     }
   };
 
-  // নামের আদ্যক্ষর তৈরি (Mubashir Jawad -> MJ)
+  // Get initials from user name for avatar display
   const getInitials = (name: string) => {
     if (!name) return "U";
     return name
@@ -181,7 +182,7 @@ export default function Topbar() {
       .slice(0, 2);
   };
 
-  // লাইভ সার্চ ফিল্টার
+  // Filter transactions based on search query for live search dropdown
   const filteredTransactions = searchQuery.trim()
     ? transactions
         .filter(
@@ -200,7 +201,15 @@ export default function Topbar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-white px-8 py-4">
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-3 lg:px-8 lg:py-4">
+      {/* Mobile Leaf Logo (Hidden on desktop since Sidebar has it) */}
+      <Link
+        href="/"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0F3D2E] lg:hidden"
+      >
+        <Leaf className="h-5 w-5 text-[#4ade80]" />
+      </Link>
+
       {/* 1. Interactive Search Box */}
       <div ref={searchRef} className="relative w-full max-w-xl">
         <div className="flex w-full items-center gap-3 rounded-xl bg-canvas px-4 py-3 focus-within:ring-2 focus-within:ring-brand-600/20 transition-all">
@@ -277,7 +286,7 @@ export default function Topbar() {
       </div>
 
       {/* Right Side Controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 shrink-0">
         {/* Quick Theme Toggle Button (Sun / Moon) */}
         <button
           onClick={toggleTheme}
@@ -307,7 +316,7 @@ export default function Topbar() {
           </button>
 
           {isNotifOpen && (
-            <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-gray-100 bg-white p-4 shadow-xl z-50">
+            <div className="fixed inset-x-4 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80 rounded-2xl border border-gray-100 bg-white p-4 shadow-xl z-50">
               <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
                 <h3 className="text-sm font-semibold text-gray-900">
                   Notifications
@@ -366,10 +375,10 @@ export default function Topbar() {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="flex items-center gap-3 rounded-xl p-1.5 hover:bg-gray-50 transition-colors text-left"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white">
               {getInitials(user.name)}
             </div>
-            <div className="text-sm leading-tight">
+            <div className="hidden sm:block text-sm leading-tight">
               <p className="font-medium text-gray-900">{user.name}</p>
               <p className="text-xs text-muted">Admin</p>
             </div>

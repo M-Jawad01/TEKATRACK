@@ -56,7 +56,7 @@ export default function GoalsPage() {
         alert("Funds added successfully!");
         setIsAddFundsOpen(false);
         setAmountToAdd("");
-        window.location.reload(); // Page reload kore notun data anbe
+        window.location.reload(); // new data will be fetched after reload
       } else {
         alert("Failed to add funds");
       }
