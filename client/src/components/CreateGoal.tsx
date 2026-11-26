@@ -20,7 +20,7 @@ export default function CreateGoal() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:5000/api/goals", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

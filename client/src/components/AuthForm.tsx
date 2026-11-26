@@ -15,8 +15,8 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
 
     // login or registration api link
     const endpoint = mode === "login" 
-      ? "http://localhost:5000/api/login" 
-      : "http://localhost:5000/api/register";
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/login` 
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/register`;
 
     try {
       const res = await fetch(endpoint, {

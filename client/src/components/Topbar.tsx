@@ -75,10 +75,10 @@ export default function Topbar() {
         const headers = { Authorization: `Bearer ${token}` };
 
         const [txRes, budgetRes, goalRes, profileRes] = await Promise.all([
-          fetch("http://localhost:5000/api/transactions", { headers }),
-          fetch("http://localhost:5000/api/budgets", { headers }),
-          fetch("http://localhost:5000/api/goals", { headers }),
-          fetch("http://localhost:5000/api/user/profile", { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/transactions`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/budgets`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`, { headers }),
         ]);
 
         if (profileRes.ok) {

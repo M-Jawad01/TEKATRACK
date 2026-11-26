@@ -13,7 +13,7 @@ export default function BudgetsPage() {
     const fetchBudgets = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/budgets", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/budgets`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

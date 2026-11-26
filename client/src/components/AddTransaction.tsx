@@ -19,7 +19,7 @@ export default function AddTransaction() {
     const token = localStorage.getItem("token"); // logged user's token 
 
     try {
-      const res = await fetch("http://localhost:5000/api/transactions", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/transactions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
