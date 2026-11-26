@@ -211,7 +211,7 @@ export default function DashboardOverview() {
                         <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(val: number) => `৳${val.toLocaleString()}`} />
+                    <Tooltip formatter={(val: any) => `৳${Number(val || 0).toLocaleString()}`} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
