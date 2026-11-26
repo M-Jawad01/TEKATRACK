@@ -1,8 +1,31 @@
+"use client";
+
+import { useEffect, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import MobileNav from "@/components/MobileNav";
 
+const emptySubscribe = () => () => {};
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const token = useSyncExternalStore(
+    emptySubscribe,
+    () => localStorage.getItem("token"),
+    () => null
+  );
+
+  useEffect(() => {
+    if (!token) {
+      router.replace("/login");
+    }
+  }, [token, router]);
+
+  if (!token) {
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar (Hidden on mobile) */}
